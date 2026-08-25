@@ -16,6 +16,33 @@ context.
 
 ---
 
+## The one thing you do have to say
+
+Opening a session is automatic. **Closing one is not.**
+
+```
+open a session   →  nothing to say. The hook injected the task file already.
+close it out     →  say "wrap up per the handover workflow"
+```
+
+That one sentence rewrites the task file for next time, appends a state
+section saying what this round overturned, and updates the tracker.
+
+**And if you forget** — you close the window, you get pulled into something
+else — the next session is *told*:
+
+> ⚠️ The task file may be stale: 2 commits have landed since it was last
+> updated, and 2 files are uncommitted. The previous round likely never wrapped
+> up, so the task below may already be done. **Check the actual state before
+> trusting it.**
+
+The hook works that out from two facts: commits since the task file last
+changed, and uncommitted changes in the tree. It does **not** try to guess
+whether you wrapped up — it reports both numbers and tells the next session to
+verify. A false alarm costs one check; a miss costs a round of redone work.
+
+---
+
 ## The problem it solves
 
 You finish a session. You open a new one. The model remembers nothing.
@@ -37,7 +64,7 @@ Three distinct diseases, and they need three different cures:
 
 ## What you get
 
-Six files, each with one job. The split is the whole design — mixing them is
+Seven files, each with one job. The split is the whole design — mixing them is
 what rots documentation.
 
 | File | Job | Mutability |
@@ -46,6 +73,7 @@ what rots documentation.
 | `docs/handover/README.md` | Panorama, workflow, gate commands | **Pointers only, never status** |
 | `docs/plan/tracker.md` | The single list of everything outstanding | Living document |
 | `docs/workflow/portable-session-handover.md` | Why each rule exists | Copied from `METHOD.md` |
+| `.claude/handover-context.sh` | Hook body: injects the task file **and flags it when stale** | Installed once |
 | `.claude/settings.json` | **SessionStart hook — auto-loads the task file** | Merged into whatever you already have |
 | `CLAUDE.md` | Fallback if the hook is off + the wrap-up trigger phrase | One section appended |
 
@@ -134,8 +162,9 @@ hardcoded number.
 
 ## Using it day to day
 
-**New session** — say nothing. The hook already injected the task file.
-(If it didn't: open `/hooks` once to reload, or restart.)
+**New session** — say nothing. The hook already injected the task file, with a
+staleness warning in front of it if the last round never wrapped up.
+(If nothing was injected at all: open `/hooks` once to reload, or restart.)
 
 **Wrapping up** — say *"按交接工作流收口"* / *"wrap up per the handover
 workflow"*, and four things happen:
@@ -169,7 +198,7 @@ Written down rather than glossed over — `METHOD.md` §7 has the full list.
 install.sh    Install into a project. Never overwrites; merges settings.json.
 METHOD.md     The method: every rule with the incident that produced it,
               plus this system's own known failure modes.
-templates/    Six skeletons the installer renders.
+templates/    The skeletons the installer renders.
 ```
 
 ## License
