@@ -52,6 +52,17 @@ render "$TPL/tracker.md"              "$TARGET/docs/plan/tracker.md"
 render "$HERE/METHOD.md"              "$TARGET/docs/workflow/portable-session-handover.md"
 
 # --- SessionStart hook: merge, never clobber -------------------------------
+# The hook body is a script rather than an inline command: it also reports
+# whether the task file is STALE, which needs more than one line of shell.
+mkdir -p "$TARGET/.claude"
+if [[ -e "$TARGET/.claude/handover-context.sh" ]]; then
+  echo "  keep   .claude/handover-context.sh  (exists)"
+else
+  cp "$TPL/handover-context.sh" "$TARGET/.claude/handover-context.sh"
+  chmod +x "$TARGET/.claude/handover-context.sh"
+  echo "  write  .claude/handover-context.sh"
+fi
+
 SETTINGS="$TARGET/.claude/settings.json"
 mkdir -p "$TARGET/.claude"
 HOOK_CMD="$(jq -r '.hooks.SessionStart[0].hooks[0].command' "$TPL/session-start-hook.json")"

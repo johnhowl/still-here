@@ -5,9 +5,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=\"${CLAUDE_PROJECT_DIR:-.}/docs/handover/next-session-prompt.md\"; [ -f \"$f\" ] && jq -Rs --arg p \"docs/handover/next-session-prompt.md\" '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:(\"=== 交接工作流：本轮任务书 \" + $p + \" ===\\n本文件已自动载入。按它执行，不必再读一遍。\\n\\n\" + .)}}' \"$f\" || true",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/.claude/handover-context.sh\" 2>/dev/null || true",
             "timeout": 10,
-            "statusMessage": "载入交接任务书"
+            "statusMessage": "load handover task file"
           }
         ]
       }
