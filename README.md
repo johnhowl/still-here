@@ -7,7 +7,7 @@ the next session opens already knowing what to do, where the project is, and
 which conclusions were overturned last round — with no opening message from you.
 
 ```bash
-git clone https://github.com/YOURNAME/still-here
+git clone https://github.com/johnhowl/still-here
 ./still-here/install.sh ~/your-project "Your Project"
 ```
 
